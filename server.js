@@ -30,6 +30,14 @@ app.use(
 
 app.use(express.static(path.join(__dirname, '/public')));
 
+app.get('/testimonials', (req, res) => {
+  res.json([db]);
+});
+
+app.get('/testimonials/:id', (req, res) => {
+  res.json(db[req.params.id - 1]);
+});
+
 app.use((req, res) => {
   res.status(404).send('404 You shall not pass!');
 });
