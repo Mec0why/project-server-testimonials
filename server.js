@@ -59,7 +59,7 @@ app.post('/testimonials', (req, res) => {
 
   db.push(testimonial);
 
-  res.json(db);
+  res.json({ message: 'OK' });
 });
 
 app.put('/testimonials/:id', (req, res) => {
@@ -72,7 +72,7 @@ app.put('/testimonials/:id', (req, res) => {
       : testimonial
   );
 
-  res.json(db);
+  res.json({ message: 'OK' });
 });
 
 app.delete('/testimonials/:id', (req, res) => {
@@ -82,7 +82,8 @@ app.delete('/testimonials/:id', (req, res) => {
     testimonial.id === id ? false : true
   );
 
-  res.json(filteredDb);
+  console.log(filteredDb);
+  res.json({ message: 'OK' });
 });
 
 app.use((req, res) => {
