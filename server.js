@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const { parse } = require('path');
 
 const db = [
   { id: 1, author: 'John Doe', text: 'This company is worth every coin!' },
@@ -30,8 +31,18 @@ app.use(
 
 app.use(express.static(path.join(__dirname, '/public')));
 
+app.use(express.urlencoded({ extended: false }));
+
 app.get('/testimonials', (req, res) => {
-  res.json([db]);
+  res.json(db);
+});
+
+app.get('/testimonials/random', (req, res) => {
+  let random = db[Math.floor(Math.random() * db.length)];
+
+  console.log(db[req.random]);
+
+  res.json(random);
 });
 
 app.get('/testimonials/:id', (req, res) => {
