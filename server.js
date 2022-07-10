@@ -130,6 +130,60 @@ app.delete('/concerts/:id', (req, res) => {
   res.json({ message: 'OK' });
 });
 
+app.get('/seats', (req, res) => {
+  res.json(db.seats);
+});
+
+app.get('/seats/:id', (req, res) => {
+  res.json(db.seats[req.params.id - 1]);
+});
+
+app.post('/seats', (req, res) => {
+  const { day, seat, client, email } = req.body;
+
+  const seatObj = {
+    id: shortid.generate(),
+    day: day,
+    seat: seat,
+    client: client,
+    email: email,
+  };
+
+  db.seats.push(seatObj);
+
+  res.json({ message: 'OK' });
+});
+
+app.put('/seats/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { day, seat, client, email } = req.body;
+
+  db.seats.map((seatObj, i) =>
+    seatObj.id === id
+      ? (db.seats[i] = {
+          ...seatObj,
+          day: day,
+          seat: seat,
+          client: client,
+          email: email,
+        })
+      : seatObj
+  );
+
+  res.json({ message: 'OK' });
+});
+
+app.delete('/seats/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const filteredDb = db.seats.filter((seatObj) =>
+    seatObj.id === id ? false : true
+  );
+
+  console.log(filteredDb);
+  res.json({ message: 'OK' });
+});
+
 app.use((req, res) => {
   res.status(404).send('404 You shall not pass!');
 });
