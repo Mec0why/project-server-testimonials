@@ -13,10 +13,15 @@ const seatsRoutes = require('./routes/seats.routes');
 
 // use additional packages
 app.use(
-  cors({
-    origin: 'https://kodilla.com', //origin sets domains that we approve
-    methods: 'GET, POST', //we allow only GET and POST methods
-  })
+  cors(
+    {
+      origin: 'https://kodilla.com', //origin sets domains that we approve
+      methods: 'GET, POST', //we allow only GET and POST methods
+    },
+    {
+      origin: 'http://localhost:3000/',
+    }
+  )
 );
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: true }));
