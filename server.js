@@ -75,6 +75,16 @@ app.put('/testimonials/:id', (req, res) => {
   res.json(db);
 });
 
+app.delete('/testimonials/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const filteredDb = db.filter((testimonial) =>
+    testimonial.id === id ? false : true
+  );
+
+  res.json(filteredDb);
+});
+
 app.use((req, res) => {
   res.status(404).send('404 You shall not pass!');
 });
