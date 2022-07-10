@@ -4,7 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const shortid = require('shortid');
 const multer = require('multer');
-const upload = multer();
+const upload = multer({ dest: 'img/uploads/' });
 
 const app = express();
 
