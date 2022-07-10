@@ -7,9 +7,9 @@ const path = require('path');
 const cors = require('cors');
 
 // import endpoints
-const testimonialsRoutes = require('./routes/testimonials.routes'); // import testimonials routes
-const concertsRoutes = require('./routes/concerts.routes'); // import concerts routes
-const seatsRoutes = require('./routes/seats.routes'); // import seats routes
+const testimonialsRoutes = require('./routes/testimonials.routes');
+const concertsRoutes = require('./routes/concerts.routes');
+const seatsRoutes = require('./routes/seats.routes');
 
 // use additional packages
 app.use(
@@ -23,9 +23,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // use endpoints
-app.use('/api', testimonialsRoutes); // add testimonials routes to server
-app.use('/api', concertsRoutes); // add concerts routes to server
-app.use('/api', seatsRoutes); // add seats routes to server
+app.use('/api', testimonialsRoutes);
+app.use('/api', concertsRoutes);
+app.use('/api', seatsRoutes);
 
 app.use((req, res) => {
   res.status(404).send('404 You shall not pass!');
