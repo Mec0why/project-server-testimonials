@@ -26,7 +26,7 @@ const app = express();
 app.use(
   cors({
     origin: 'https://kodilla.com', //origin sets domains that we approve
-    methods: 'GET,POST', //we allow only GET and POST methods
+    methods: 'GET, POST', //we allow only GET and POST methods
   })
 );
 
@@ -58,6 +58,19 @@ app.post('/testimonials', (req, res) => {
   };
 
   db.push(testimonial);
+
+  res.json(db);
+});
+
+app.put('/testimonials/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { author, text } = req.body;
+
+  db.map((testimonial, i) =>
+    testimonial.id === id
+      ? (db[i] = { ...testimonial, author: author, text: text })
+      : testimonial
+  );
 
   res.json(db);
 });
