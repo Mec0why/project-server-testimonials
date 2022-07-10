@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const shortid = require('shortid');
 const { parse } = require('path');
 
 const db = [
@@ -31,7 +32,7 @@ app.use(
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/testimonials', (req, res) => {
   res.json(db);
@@ -40,13 +41,25 @@ app.get('/testimonials', (req, res) => {
 app.get('/testimonials/random', (req, res) => {
   let random = db[Math.floor(Math.random() * db.length)];
 
-  console.log(db[req.random]);
-
   res.json(random);
 });
 
 app.get('/testimonials/:id', (req, res) => {
   res.json(db[req.params.id - 1]);
+});
+
+app.post('/testimonials', (req, res) => {
+  const { author, text } = req.body;
+
+  const testimonial = {
+    id: shortid.generate(),
+    author: author,
+    text: text,
+  };
+
+  db.push(testimonial);
+
+  res.json(db);
 });
 
 app.use((req, res) => {
