@@ -1,26 +1,9 @@
+const db = require('./db.js');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const shortid = require('shortid');
 const { parse } = require('path');
-
-const db = [
-  { id: 1, author: 'John Doe', text: 'This company is worth every coin!' },
-  {
-    id: 2,
-    author: 'Amanda Doe',
-    text: 'They really know how to make you happy.',
-  },
-  { id: 3, author: 'Dustin Henderson', text: 'Never ending storyyy...' },
-  { id: 4, author: 'Lucas Sinclair', text: 'Kate Bush will help You' },
-  { id: 5, author: 'Mike Willer', text: 'I count to eleven' },
-  { id: 6, author: 'Will Byers', text: 'Lost in time and upside down' },
-  {
-    id: 7,
-    author: 'Jim Hopper',
-    text: 'Mornings are for coffee and contemplation',
-  },
-];
 
 const app = express();
 app.use(
@@ -35,17 +18,18 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/testimonials', (req, res) => {
-  res.json(db);
+  res.json(db.testimonials);
 });
 
 app.get('/testimonials/random', (req, res) => {
-  let random = db[Math.floor(Math.random() * db.length)];
+  let random =
+    db.testimonials[Math.floor(Math.random() * db.testimonials.length)];
 
   res.json(random);
 });
 
 app.get('/testimonials/:id', (req, res) => {
-  res.json(db[req.params.id - 1]);
+  res.json(db.testimonials[req.params.id - 1]);
 });
 
 app.post('/testimonials', (req, res) => {
@@ -57,7 +41,7 @@ app.post('/testimonials', (req, res) => {
     text: text,
   };
 
-  db.push(testimonial);
+  db.testimonials.push(testimonial);
 
   res.json({ message: 'OK' });
 });
@@ -66,9 +50,9 @@ app.put('/testimonials/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const { author, text } = req.body;
 
-  db.map((testimonial, i) =>
+  db.testimonials.map((testimonial, i) =>
     testimonial.id === id
-      ? (db[i] = { ...testimonial, author: author, text: text })
+      ? (db.testimonials[i] = { ...testimonial, author: author, text: text })
       : testimonial
   );
 
@@ -78,7 +62,7 @@ app.put('/testimonials/:id', (req, res) => {
 app.delete('/testimonials/:id', (req, res) => {
   const id = parseInt(req.params.id);
 
-  const filteredDb = db.filter((testimonial) =>
+  const filteredDb = db.testimonials.filter((testimonial) =>
     testimonial.id === id ? false : true
   );
 
