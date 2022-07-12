@@ -14,17 +14,23 @@ router.route('/seats/:id').get((req, res) => {
 router.route('/seats').post((req, res) => {
   const { day, seat, client, email } = req.body;
 
-  const seatObj = {
-    id: shortid.generate(),
-    day: day,
-    seat: seat,
-    client: client,
-    email: email,
-  };
+  const seatCheck = db.seats.some(
+    (seatReq) => seatReq.day === day && seatReq.seat === seat
+  );
 
-  db.seats.push(seatObj);
-
-  res.json({ message: 'OK' });
+  if (!seatCheck) {
+    const seatObj = {
+      id: shortid.generate(),
+      day: day,
+      seat: seat,
+      client: client,
+      email: email,
+    };
+    db.seats.push(seatObj);
+    res.json({ message: 'OK' });
+  } else {
+    res.status(409).json({ message: 'Seat is already taken...' });
+  }
 });
 
 router.route('/seats/:id').put((req, res) => {
