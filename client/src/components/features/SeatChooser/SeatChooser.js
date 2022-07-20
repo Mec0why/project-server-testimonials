@@ -8,11 +8,19 @@ import {
 } from '../../../redux/seatsRedux';
 import './SeatChooser.scss';
 
-import io from 'socket.io-client';
-const serverURL = process.env.NODE_ENV || 'http://localhost:8000/';
+import { io } from 'socket.io-client';
 
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
-  const [socket] = useState(io(serverURL));
+  const [socket] = useState(
+    io(
+      process.env.NODE_ENV === 'production'
+        ? window.location
+        : 'localhost:8000',
+      {
+        transports: ['websocket'],
+      }
+    )
+  );
   const dispatch = useDispatch();
   const seats = useSelector(getSeats);
   const requests = useSelector(getRequests);
@@ -20,11 +28,14 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
   useEffect(() => {
     socket.on('connection', () => {
       console.log('I connected!');
+      console.log(window.location);
     });
+
     dispatch(loadSeatsRequest());
     const interval = setInterval(() => {
       dispatch(loadSeatsRequest());
     }, 120000);
+
     return () => clearInterval(interval);
   }, [dispatch]);
 

@@ -1,7 +1,7 @@
 // initialize server
 const express = require('express');
 const app = express();
-const io = require('socket.io'),
+const io = require('socket.io');
 
 // import additional packages
 const path = require('path');
@@ -14,15 +14,9 @@ const seatsRoutes = require('./routes/seats.routes');
 
 // use additional packages
 app.use(
-  cors(
-    {
-      origin: 'https://kodilla.com', //origin sets domains that we approve
-      methods: 'GET, POST', //we allow only GET and POST methods
-    },
-    {
-      origin: 'http://localhost:3000/',
-    }
-  )
+  cors({
+    origin: ['http://localhost:8000', 'http://localhost:3000'],
+  })
 );
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: true }));
@@ -52,7 +46,8 @@ const socket = io(server);
 
 socket.on('connection', (socket) => {
   console.log('New client! Its id – ' + socket.id);
-  
+
+  socket.emit('connection');
 
   socket.on('disconnect', () => {
     console.log('Oh, socket ' + socket.id + ' has left');
