@@ -9,7 +9,6 @@ import {
 import './SeatChooser.scss';
 
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat, socket }) => {
-
   const dispatch = useDispatch();
   const seats = useSelector(getSeats);
   const requests = useSelector(getRequests);
@@ -20,7 +19,6 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat, socket }) => {
     });
 
     dispatch(loadSeatsRequest());
-
   }, []);
 
   const isTaken = (seatId) => {
@@ -74,6 +72,7 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat, socket }) => {
       {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].error && (
         <Alert color='warning'>Couldn't load seats...</Alert>
       )}
+      Seats taken: {seats.filter((item) => item.day === chosenDay).length}/50
     </div>
   );
 };
