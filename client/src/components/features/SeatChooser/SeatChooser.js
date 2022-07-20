@@ -14,7 +14,7 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
   const [socket] = useState(
     io(
       process.env.NODE_ENV === 'production'
-        ? window.location
+        ? '/'
         : 'localhost:8000',
       {
         transports: ['websocket'],
@@ -28,9 +28,11 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
   useEffect(() => {
     socket.on('connection', () => {
       console.log('I connected!');
-      console.log(window.location);
     });
 
+    socket.on('seatsUpdated', (seatsUpdated) => {
+      console.log(seatsUpdated);
+    });
     dispatch(loadSeatsRequest());
     const interval = setInterval(() => {
       dispatch(loadSeatsRequest());

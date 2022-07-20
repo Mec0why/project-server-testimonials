@@ -1,11 +1,17 @@
 // initialize server
 const express = require('express');
 const app = express();
-const io = require('socket.io');
+const socket = require('socket.io');
 
 // import additional packages
 const path = require('path');
 const cors = require('cors');
+
+// Add middleware to add req.io reference in all endpoints
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 // import endpoints
 const testimonialsRoutes = require('./routes/testimonials.routes');
@@ -42,9 +48,9 @@ const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
 });
 
-const socket = io(server);
+const io = socket(server);
 
-socket.on('connection', (socket) => {
+io.on('connection', (socket) => {
   console.log('New client! Its id – ' + socket.id);
 
   socket.emit('connection');
