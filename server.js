@@ -34,8 +34,8 @@ app.use(express.static(path.join(__dirname, '/client/build')));
 
 // use endpoints
 app.use('/api', testimonialsRoutes);
-app.use('/api', concertsRoutes);
-app.use('/api', seatsRoutes);
+// app.use('/api', concertsRoutes);
+// app.use('/api', seatsRoutes);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
@@ -46,7 +46,7 @@ app.use((req, res) => {
 });
 
 // connects our backend code with the database
-mongoose.connect('mongodb://localhost:27017/companyDB', {
+mongoose.connect('mongodb://localhost:27017/NewWaveDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
