@@ -1,66 +1,92 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./../db');
-const shortid = require('shortid');
+
 const multer = require('multer');
-const upload = multer({ dest: 'img/uploads/' });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './img/uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
-router.route('/concerts').get((req, res) => {
-  res.json(db.concerts);
+const Concert = require('../models/concert.model');
+
+router.get('/concerts', async (req, res) => {
+  try {
+    res.json(await Concert.find().populate());
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.route('/concerts/:id').get((req, res) => {
-  res.json(db.concerts[req.params.id - 1]);
+router.get('/concerts/:id', async (req, res) => {
+  try {
+    const con = await Concert.findById(req.params.id).populate();
+    if (!con) res.status(404).json({ message: 'Not found' });
+    else res.json(con);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.route('/concerts').post(upload.single('concertImage'), (req, res) => {
-  const { performer, genre, price, day } = req.body;
-  const image = req.file;
+router.post('/concerts', upload.single('image'), async (req, res) => {
+  try {
+    const { performer, genre, price, day } = req.body;
+    const image = req.file.path;
 
-  const concert = {
-    id: shortid.generate(),
-    performer: performer,
-    genre: genre,
-    price: price,
-    day: day,
-    image: image,
-  };
-
-  db.concerts.push(concert);
-
-  res.json({ message: 'OK' });
+    const newConcert = new Concert({
+      performer: performer,
+      genre: genre,
+      price: price,
+      day: day,
+      image: image,
+    });
+    await newConcert.save();
+    res.json({ message: 'OK' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.route('/concerts/:id').put(upload.single('concertImage'), (req, res) => {
-  const id = parseInt(req.params.id);
-  const { performer, genre, price, day } = req.body;
-  const image = req.file;
+router.put('/concerts/:id', upload.single('image'), async (req, res) => {
+  try {
+    const { performer, genre, price, day } = req.body;
+    const image = req.file.path;
 
-  db.concerts.map((concert, i) =>
-    concert.id === id
-      ? (db.concerts[i] = {
-          ...concert,
-          performer: performer,
-          genre: genre,
-          price: price,
-          day: day,
-          image: image,
-        })
-      : concert
-  );
-
-  res.json({ message: 'OK' });
+    const con = await Concert.findById(req.params.id);
+    if (con) {
+      await Concert.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            performer: performer,
+            genre: genre,
+            price: price,
+            day: day,
+            image: image,
+          },
+        }
+      );
+      res.json({ message: 'OK' });
+    } else res.status(404).json({ message: 'Not found...' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.route('/concerts/:id').delete((req, res) => {
-  const id = parseInt(req.params.id);
-
-  const filteredDb = db.concerts.filter((concert) =>
-    concert.id === id ? false : true
-  );
-
-  console.log(filteredDb);
-  res.json({ message: 'OK' });
+router.delete('/concerts/:id', async (req, res) => {
+  try {
+    const con = await Concert.findById(req.params.id);
+    if (con) {
+      await Concert.deleteOne({ _id: req.params.id });
+      res.json({ message: 'OK' });
+    } else res.status(404).json({ message: 'Not found...' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
 });
 
 module.exports = router;
