@@ -25,7 +25,6 @@ import SeatChooser from './../SeatChooser/SeatChooser';
 const OrderTicketForm = () => {
   const dispatch = useDispatch();
   const requests = useSelector(getRequests);
-  console.log(requests);
 
   const [socket] = useState(
     io(process.env.NODE_ENV === 'production' ? '/' : 'localhost:8000', {
@@ -37,6 +36,10 @@ const OrderTicketForm = () => {
     socket.on('seatsUpdated', (seats) => {
       dispatch(loadSeats(seats));
     });
+
+    return () => {
+      socket.off('seatsUpdated');
+    };
   }, []);
 
   const [order, setOrder] = useState({

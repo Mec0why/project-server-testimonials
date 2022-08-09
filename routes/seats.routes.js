@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./../db');
-const shortid = require('shortid');
 
 const Seat = require('../models/seat.model');
+const Concert = require('../models/concert.model');
 
 router.get('/seats', async (req, res) => {
   try {
@@ -12,10 +11,6 @@ router.get('/seats', async (req, res) => {
     res.status(500).json({ message: err });
   }
 });
-
-// router.route('/seats').get((req, res) => {
-//   res.json(db.seats);
-// });
 
 router.get('/seats/:id', async (req, res) => {
   try {
@@ -26,10 +21,6 @@ router.get('/seats/:id', async (req, res) => {
     res.status(500).json({ message: err });
   }
 });
-
-// router.route('/seats/:id').get((req, res) => {
-//   res.json(db.seats[req.params.id - 1]);
-// });
 
 // router.route('/seats').post((req, res) => {
 //   const { day, seat, client, email } = req.body;
@@ -56,22 +47,30 @@ router.get('/seats/:id', async (req, res) => {
 //   }
 // });
 
-// router.post('/seats', async (req, res) => {
-//   try {
-//     const { day, seat, client, email } = req.body;
+router.post('/seats', async (req, res) => {
+  try {
+    const { day, seat, client, email } = req.body;
 
-//     const newSeat = new Seat({
-//       day: day,
-//       seat: seat,
-//       client: client,
-//       email: email,
-//     });
-//     await newSeat.save();
-//     res.json({ message: 'OK' });
-//   } catch (err) {
-//     res.status(500).json({ message: err });
-//   }
-// });
+    const eventDay = await Concert.findOne({ day: day });
+
+    console.log(eventDay);
+
+    const newSeat = new Seat({
+      event: eventDay,
+      seat: seat,
+      client: client,
+      email: email,
+    });
+    await newSeat.save();
+
+    const allSeats = await Seat.find().populate('event');
+    req.io.emit('seatsUpdated', allSeats);
+
+    res.json(newSeat);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
 
 // router.route('/seats/:id').put((req, res) => {
 //   const id = parseInt(req.params.id);

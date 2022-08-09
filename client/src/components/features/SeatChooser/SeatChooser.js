@@ -19,10 +19,16 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat, socket }) => {
     });
 
     dispatch(loadSeatsRequest());
+
+    return () => {
+      socket.off('connection');
+    };
   }, []);
 
   const isTaken = (seatId) => {
-    return seats.some((item) => item.seat === seatId && item.event.day === chosenDay);
+    return seats.some(
+      (item) => item.seat === seatId && item.event.day === chosenDay
+    );
   };
 
   const prepareSeat = (seatId) => {
@@ -72,7 +78,11 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat, socket }) => {
       {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].error && (
         <Alert color='warning'>Couldn't load seats...</Alert>
       )}
-      Seats taken: {seats.filter((item) => item.event.day === chosenDay).length}/50
+      <>
+        Seats taken:{' '}
+        {seats.filter((item) => item.event.day === chosenDay).length}
+        /50
+      </>
     </div>
   );
 };

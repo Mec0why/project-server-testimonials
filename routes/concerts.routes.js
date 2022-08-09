@@ -16,7 +16,7 @@ const Concert = require('../models/concert.model');
 
 router.get('/concerts', async (req, res) => {
   try {
-    res.json(await Concert.find().populate());
+    res.json(await Concert.find());
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -24,7 +24,7 @@ router.get('/concerts', async (req, res) => {
 
 router.get('/concerts/:id', async (req, res) => {
   try {
-    const con = await Concert.findById(req.params.id).populate();
+    const con = await Concert.findById(req.params.id);
     if (!con) res.status(404).json({ message: 'Not found' });
     else res.json(con);
   } catch (err) {
@@ -45,7 +45,7 @@ router.post('/concerts', upload.single('image'), async (req, res) => {
       image: image,
     });
     await newConcert.save();
-    res.json({ message: 'OK' });
+    res.json(newConcert);
   } catch (err) {
     res.status(500).json({ message: err });
   }
