@@ -58,7 +58,7 @@ router.put('/concerts/:id', upload.single('image'), async (req, res) => {
 
     const con = await Concert.findById(req.params.id);
     if (con) {
-      await Concert.updateOne(
+      const updatedConcert = await Concert.findOneAndUpdate(
         { _id: req.params.id },
         {
           $set: {
@@ -68,9 +68,10 @@ router.put('/concerts/:id', upload.single('image'), async (req, res) => {
             day: day,
             image: image,
           },
-        }
+        },
+        { new: true }
       );
-      res.json({ message: 'OK' });
+      res.json(updatedConcert);
     } else res.status(404).json({ message: 'Not found...' });
   } catch (err) {
     res.status(500).json({ message: err });
