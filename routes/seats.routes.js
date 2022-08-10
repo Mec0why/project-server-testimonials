@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Seat = require('../models/seat.model');
 const Concert = require('../models/concert.model');
+const concertModel = require('../models/concert.model');
 
 router.get('/seats', async (req, res) => {
   try {
@@ -51,12 +52,14 @@ router.post('/seats', async (req, res) => {
   try {
     const { day, seat, client, email } = req.body;
 
-    const eventDay = await Concert.findOne({ day });
-    const seatCheck = await Seat.exists({ day, seat });
+    const eventCheck = await Concert.findOne({ day: day });
+    const seatCheck = await Seat.findOne({
+      $and: [{ seat: seat }, { event: eventCheck._id }],
+    });
 
     if (!seatCheck) {
       const newSeat = new Seat({
-        event: eventDay,
+        event: eventCheck,
         seat: seat,
         client: client,
         email: email,
