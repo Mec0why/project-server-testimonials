@@ -3,7 +3,6 @@ const router = express.Router();
 
 const Seat = require('../models/seat.model');
 const Concert = require('../models/concert.model');
-const concertModel = require('../models/concert.model');
 
 router.get('/seats', async (req, res) => {
   try {
@@ -22,31 +21,6 @@ router.get('/seats/:id', async (req, res) => {
     res.status(500).json({ message: err });
   }
 });
-
-// router.route('/seats').post((req, res) => {
-//   const { day, seat, client, email } = req.body;
-
-//   const seatCheck = db.seats.some(
-//     (seatReq) => seatReq.day === day && seatReq.seat === seat
-//   );
-
-//   if (!seatCheck) {
-//     const seatObj = {
-//       id: shortid.generate(),
-//       day: day,
-//       seat: seat,
-//       client: client,
-//       email: email,
-//     };
-//     db.seats.push(seatObj);
-
-//     req.io.emit('seatsUpdated', db.seats);
-
-//     res.json({ message: 'OK' });
-//   } else {
-//     res.status(409).json({ message: 'Seat is already taken...' });
-//   }
-// });
 
 router.post('/seats', async (req, res) => {
   try {
@@ -82,25 +56,6 @@ router.post('/seats', async (req, res) => {
     res.status(500).json({ message: err });
   }
 });
-
-// router.route('/seats/:id').put((req, res) => {
-//   const id = parseInt(req.params.id);
-//   const { day, seat, client, email } = req.body;
-
-//   db.seats.map((seatObj, i) =>
-//     seatObj.id === id
-//       ? (db.seats[i] = {
-//           ...seatObj,
-//           day: day,
-//           seat: seat,
-//           client: client,
-//           email: email,
-//         })
-//       : seatObj
-//   );
-
-//   res.json({ message: 'OK' });
-// });
 
 router.put('/seats/:id', async (req, res) => {
   try {
