@@ -41,7 +41,7 @@ router.post('/testimonials', async (req, res) => {
       text: text,
     });
     await newTestimonial.save();
-    res.json({ message: 'OK' });
+    res.json(newTestimonial);
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -52,16 +52,17 @@ router.put('/testimonials/:id', async (req, res) => {
   try {
     const tes = await Testimonial.findById(req.params.id);
     if (tes) {
-      await Testimonial.updateOne(
+      const updatedTestimonial = await Testimonial.findOneAndUpdate(
         { _id: req.params.id },
         {
           $set: {
             author: author,
             text: text,
           },
-        }
+        },
+        { new: true }
       );
-      res.json({ message: 'OK' });
+      res.json(updatedTestimonial);
     } else res.status(404).json({ message: 'Not found...' });
   } catch (err) {
     res.status(500).json({ message: err });
