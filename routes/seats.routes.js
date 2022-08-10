@@ -53,25 +53,30 @@ router.post('/seats', async (req, res) => {
     const { day, seat, client, email } = req.body;
 
     const eventCheck = await Concert.findOne({ day: day });
-    const seatCheck = await Seat.findOne({
-      $and: [{ seat: seat }, { event: eventCheck._id }],
-    });
 
-    if (!seatCheck) {
-      const newSeat = new Seat({
-        event: eventCheck,
-        seat: seat,
-        client: client,
-        email: email,
-      });
-      await newSeat.save();
-
-      const allSeats = await Seat.find().populate('event');
-      req.io.emit('seatsUpdated', allSeats);
-
-      res.json(newSeat);
+    if (!eventCheck) {
+      res.status(409).json({ message: 'There are no events on this date...' });
     } else {
-      res.status(409).json({ message: 'Seat is already taken...' });
+      const seatCheck = await Seat.findOne({
+        $and: [{ seat: seat }, { event: eventCheck._id }],
+      });
+
+      if (!seatCheck) {
+        const newSeat = new Seat({
+          event: eventCheck,
+          seat: seat,
+          client: client,
+          email: email,
+        });
+        await newSeat.save();
+
+        const allSeats = await Seat.find().populate('event');
+        req.io.emit('seatsUpdated', allSeats);
+
+        res.json(newSeat);
+      } else {
+        res.status(409).json({ message: 'Seat is already taken...' });
+      }
     }
   } catch (err) {
     res.status(500).json({ message: err });
