@@ -99,15 +99,15 @@ router.put('/seats/:id', async (req, res) => {
   }
 });
 
-// router.route('/seats/:id').delete((req, res) => {
-//   const id = parseInt(req.params.id);
-
-//   const filteredDb = db.seats.filter((seatObj) =>
-//     seatObj.id === id ? false : true
-//   );
-
-//   console.log(filteredDb);
-//   res.json({ message: 'OK' });
-// });
+router.delete('/seats/:id', async (req, res) => {
+  try {
+    const seat = await Seat.findOneAndDelete({ _id: req.params.id });
+    if (seat) {
+      res.json(seat);
+    } else res.status(404).json({ message: 'Not found...' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
 
 module.exports = router;

@@ -80,10 +80,9 @@ router.put('/concerts/:id', upload.single('image'), async (req, res) => {
 
 router.delete('/concerts/:id', async (req, res) => {
   try {
-    const con = await Concert.findById(req.params.id);
+    const con = await Concert.findOneAndDelete({ _id: req.params.id });
     if (con) {
-      await Concert.deleteOne({ _id: req.params.id });
-      res.json({ message: 'OK' });
+      res.json(con);
     } else res.status(404).json({ message: 'Not found...' });
   } catch (err) {
     res.status(500).json({ message: err });
