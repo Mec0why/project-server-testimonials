@@ -47,7 +47,7 @@ app.use((req, res) => {
 
 // connects our backend code with the database
 mongoose.connect(
-  'mongodb+srv://mikolaj-renke:47T4zs5BstwgApT@newwavefestival.esofyuj.mongodb.net/?retryWrites=true&w=majority'
+  'mongodb+srv://mikolaj-renke:47T4zs5BstwgApT@newwavefestival.esofyuj.mongodb.net/NewWaveDB'
 );
 const db = mongoose.connection;
 
