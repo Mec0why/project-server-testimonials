@@ -46,16 +46,15 @@ app.use((req, res) => {
 });
 
 const NODE_ENV = process.env.NODE_ENV;
+const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
+const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
 let dbUri = '';
 
 if (NODE_ENV === 'production')
-  dbUri =
-    'mongodb+srv://mikolaj-renke:47T4zs5BstwgApT@newwavefestival.esofyuj.mongodb.net/NewWaveDB';
+  dbUri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@newwavefestival.esofyuj.mongodb.net/NewWaveDB`;
 else if (NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
 else
-  dbUri =
-    'mongodb+srv://mikolaj-renke:47T4zs5BstwgApT@newwavefestival.esofyuj.mongodb.net/NewWaveDB';
-
+  dbUri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@newwavefestival.esofyuj.mongodb.net/NewWaveDB`;
 // connects our backend code with the database based on Node environment
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
