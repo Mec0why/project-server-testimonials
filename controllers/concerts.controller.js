@@ -31,7 +31,7 @@ exports.getById = async (req, res) => {
 
 exports.postOne = async (req, res) => {
   try {
-    const { performer, genre, price, day } = req.body;
+    const { performer, genre, price, day } = sanitize(req.body);
     const image = req.file.path;
 
     const newConcert = new Concert({
@@ -50,7 +50,7 @@ exports.postOne = async (req, res) => {
 
 exports.putOne = async (req, res) => {
   try {
-    const { performer, genre, price, day } = req.body;
+    const { performer, genre, price, day } = sanitize(req.body);
     const image = req.file.path;
 
     const con = await Concert.findById(req.params.id);

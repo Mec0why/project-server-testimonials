@@ -21,7 +21,7 @@ exports.getById = async (req, res) => {
 
 exports.postOne = async (req, res) => {
   try {
-    const { day, seat, client, email } = req.body;
+    const { day, seat, client, email } = sanitize(req.body);
 
     const eventMatch = await Concert.findOne({ day: day });
 
@@ -56,7 +56,7 @@ exports.postOne = async (req, res) => {
 
 exports.putOne = async (req, res) => {
   try {
-    const { day, seat, client, email } = req.body;
+    const { day, seat, client, email } = sanitize(req.body);
 
     const eventMatch = await Concert.findOne({ day: day });
 
