@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const socket = require('socket.io');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 // import additional packages
 const path = require('path');
@@ -28,6 +29,8 @@ app.use(
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(helmet());
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));

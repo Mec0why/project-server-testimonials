@@ -1,5 +1,6 @@
 const Concert = require('../models/concert.model');
 const Seat = require('../models/seat.model');
+const sanitize = require('mongo-sanitize');
 
 exports.getAll = async (req, res) => {
   try {
